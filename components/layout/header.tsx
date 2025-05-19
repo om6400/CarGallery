@@ -14,6 +14,20 @@ const navItems = [
 	{ label: "contact", href: "/contact" },
 ];
 
+const menuVariants = {
+	hidden: { opacity: 0 },
+	visible: {
+		opacity: 1,
+		transition: { when: "beforeChildren", staggerChildren: 0.1 },
+	},
+	exit: { opacity: 0, transition: { duration: 0.2 } },
+};
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 30 },
+	visible: { opacity: 1, y: 0 },
+};
+
 export async function generateStaticParams() {
 	// Replace this with your real data source
 	const images = [
@@ -68,55 +82,30 @@ export default function Header() {
 			<AnimatePresence>
 				{isMenuOpen && (
 					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.4, ease: "easeInOut" }}
-						className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50"
+						className="fixed inset-0 z-50 bg-black text-white flex flex-col items-center justify-center"
+						initial="hidden"
+						animate="visible"
+						exit="exit"
+						variants={menuVariants}
 					>
-						<div className="absolute top-6 right-6">
-							<button
+						<button
+							className="absolute top-6 right-8 text-white text-sm uppercase tracking-wider hover:opacity-60 transition"
+							onClick={() => setIsMenuOpen(false)}
+						>
+							close
+						</button>
+						{navItems.map((item) => (
+							<motion.a
+								key={item.label}
+								href={item.href}
+								className="text-4xl font-light uppercase tracking-widest hover:opacity-60 transition mb-6"
+								variants={itemVariants}
+								whileHover={{ scale: 1.05 }}
 								onClick={() => setIsMenuOpen(false)}
-								className="text-white text-sm font-light tracking-wide hover:opacity-70 transition-all duration-300"
 							>
-								close
-							</button>
-						</div>
-
-						<nav className="h-full flex flex-col items-center justify-center">
-							{navItems.map((item, i) => (
-								<motion.div
-									key={item.href}
-									initial={{ opacity: 0, y: 20 }}
-									animate={{
-										opacity: 1,
-										y: 0,
-										transition: {
-											duration: 0.4,
-											delay: i * 0.1 + 0.2,
-											ease: [0.22, 1, 0.36, 1],
-										},
-									}}
-									exit={{
-										opacity: 0,
-										y: 10,
-										transition: {
-											duration: 0.2,
-											delay: (navItems.length - i - 1) * 0.05,
-										},
-									}}
-									className="mb-6 overflow-hidden"
-								>
-									<Link
-										href={item.href}
-										onClick={() => setIsMenuOpen(false)}
-										className="text-white text-4xl font-extralight tracking-wide hover:opacity-70 transition-all duration-300"
-									>
-										{item.label}
-									</Link>
-								</motion.div>
-							))}
-						</nav>
+								{item.label}
+							</motion.a>
+						))}
 					</motion.div>
 				)}
 			</AnimatePresence>
