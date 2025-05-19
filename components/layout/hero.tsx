@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { motion, useSpring, useMotionValue, AnimatePresence } from "framer-motion";
 import { Playfair_Display } from 'next/font/google';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -15,28 +16,45 @@ interface Category {
   title: string;
   image: string;
   alt: string;
+  href: string;
 }
 
 const categories: Category[] = [
   {
-    title: "GERMAN PRECISION",
+    title: "GERMAN CAR",
     image: "/hero-1.png",
-    alt: "Mercedes-Benz luxury performance"
+    alt: "Precision German engineering showcase",
+    href: "/explore?category=german-car"
   },
   {
-    title: "JDM LEGENDS",
-    image: "/hero-2.png",
-    alt: "Japanese drift culture"
+    title: "JDM SPIRIT",
+    image: "/JDM.png",
+    alt: "Japanese domestic market performance cars",
+    href: "/explore?category=jdm-spirit"
   },
   {
-    title: "LUXURY EDGE",
-    image: "/split-1-left.png",
-    alt: "Premium automotive design"
+    title: "VELVET MACHINES",
+    image: "/val.png",
+    alt: "Luxury automotive excellence",
+    href: "/explore?category=velvet-machines"
   },
   {
-    title: "SUPERCAR ELITE",
-    image: "/split-1-right.png",
-    alt: "Hypercar performance"
+    title: "TRACK TITANS",
+    image: "/tra.png",
+    alt: "High-performance track machines",
+    href: "/explore?category=track-titans"
+  },
+  {
+    title: "AESTHETIC CAR",
+    image: "/asth.png",
+    alt: "Stunning automotive design",
+    href: "/explore?category=aesthetic-car"
+  },
+  {
+    title: "VINTAGE CAR",
+    image: "/vin.png",
+    alt: "Classic and timeless automobiles",
+    href: "/explore?category=vintage-car"
   }
 ];
 
@@ -149,10 +167,12 @@ export default function Hero() {
           {categories.map((category, index) => {
             // More dramatic positioning for each category
             const positions = [
-              'top-[40%] right-[10%]',
-              'top-[30%] left-[10%]',
+              'top-[35%] right-[10%]',
+              'top-[25%] left-[10%]',
+              'top-[45%] left-[15%]',
               'bottom-[35%] right-[15%]',
-              'bottom-[25%] left-[15%]'
+              'bottom-[25%] left-[20%]',
+              'bottom-[45%] right-[20%]'
             ];
 
             return (
@@ -170,33 +190,35 @@ export default function Hero() {
                   ease: [0.25, 0.1, 0, 1]
                 }}
               >
-                <motion.div
-                  className="relative group"
-                  onHoverStart={() => setActiveIndex(index)}
-                  onHoverEnd={() => setActiveIndex(null)}
-                >
-                  <motion.p
-                    className={cn(
-                      "text-3xl md:text-5xl text-white/40 tracking-[0.2em] uppercase",
-                      playfair.className,
-                      activeIndex === index && "text-white"
-                    )}
-                    style={{
-                      filter: activeIndex !== null && activeIndex !== index ? "blur(3px)" : "none",
-                      opacity: activeIndex !== null && activeIndex !== index ? 0.15 : 1,
-                    }}
-                    whileHover={{ scale: 1.1, x: 30 }}
-                    transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
+                <Link href={category.href}>
+                  <motion.div
+                    className="relative group"
+                    onHoverStart={() => setActiveIndex(index)}
+                    onHoverEnd={() => setActiveIndex(null)}
                   >
-                    {category.title}
-                  </motion.p>
-                  <motion.div 
-                    className="absolute left-0 h-[2px] bg-white/40 -bottom-3"
-                    initial={{ width: 0 }}
-                    animate={{ width: activeIndex === index ? '100%' : '0%' }}
-                    transition={{ duration: 0.4 }}
-                  />
-                </motion.div>
+                    <motion.p
+                      className={cn(
+                        "text-2xl md:text-4xl text-white/40 tracking-[0.2em] uppercase",
+                        playfair.className,
+                        activeIndex === index && "text-white"
+                      )}
+                      style={{
+                        filter: activeIndex !== null && activeIndex !== index ? "blur(3px)" : "none",
+                        opacity: activeIndex !== null && activeIndex !== index ? 0.15 : 1,
+                      }}
+                      whileHover={{ scale: 1.1, x: 30 }}
+                      transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
+                    >
+                      {category.title}
+                    </motion.p>
+                    <motion.div 
+                      className="absolute left-0 h-[2px] bg-white/40 -bottom-3"
+                      initial={{ width: 0 }}
+                      animate={{ width: activeIndex === index ? '100%' : '0%' }}
+                      transition={{ duration: 0.4 }}
+                    />
+                  </motion.div>
+                </Link>
               </motion.div>
             );
           })}
@@ -258,6 +280,43 @@ export default function Hero() {
           Hover to explore
         </motion.p>
       </div>
+
+      {/* Updated grid layout for category display */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((category, index) => (
+            <CategoryCard key={category.title} category={category} />
+          ))}
+        </div>
+      </section>
+    </motion.div>
+  );
+}
+
+function CategoryCard({ category }: { category: Category }) {
+  return (
+    <motion.div 
+      className="relative overflow-hidden rounded-lg cursor-pointer"
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
+      <Link href={`/category/${category.title.toLowerCase().replace(" ", "-")}`}>
+        <div className="group relative aspect-[4/5] w-full overflow-hidden">
+          <Image
+            src={category.image}
+            alt={category.alt}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+          <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:opacity-30" />
+          <div className="absolute bottom-0 left-0 p-4">
+            <h3 className="text-white text-xl font-bold tracking-wider">
+              {category.title}
+            </h3>
+          </div>
+        </div>
+      </Link>
     </motion.div>
   );
 }
