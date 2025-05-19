@@ -111,19 +111,18 @@ export default function Hero() {
 
       {/* Main content layout */}
       <div className="relative w-full h-full max-w-[2000px] mx-auto">
-        {/* Fixed title that stays on top */}
-        <motion.div
-          className="fixed inset-x-0 top-[15vh] flex flex-col items-center z-[70] pointer-events-none"
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5, ease: [0.25, 0.1, 0, 1] }}
-        >
-          <div className="relative">
+        {/* Split title treatment */}
+        <div className="absolute inset-x-0 top-[15vh] flex flex-col items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: [0.25, 0.1, 0, 1] }}
+            className="relative"
+          >
             <motion.h1 
               className={cn(
-                "text-[clamp(5rem,20vw,16rem)] font-bold leading-none tracking-tighter text-center",
-                playfair.className,
-                activeIndex !== null ? "mix-blend-overlay" : "text-white"
+                "text-[clamp(5rem,20vw,16rem)] font-bold text-white leading-none tracking-tighter text-center",
+                playfair.className
               )}
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -133,9 +132,8 @@ export default function Hero() {
             </motion.h1>
             <motion.h1 
               className={cn(
-                "text-[clamp(5rem,20vw,16rem)] font-bold leading-none tracking-tighter text-center -mt-8",
-                playfair.className,
-                activeIndex !== null ? "mix-blend-difference" : "text-white/80"
+                "text-[clamp(5rem,20vw,16rem)] font-bold text-white/80 leading-none tracking-tighter text-center -mt-8",
+                playfair.className
               )}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -143,8 +141,8 @@ export default function Hero() {
             >
               MUSE
             </motion.h1>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* Scattered categories with enhanced positioning */}
         <div className="absolute inset-0 flex items-center justify-center">

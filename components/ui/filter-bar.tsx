@@ -14,29 +14,39 @@ import {
 import { FilterOptions } from "@/lib/types";
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
 
+const resolutions = ['All', '4K', 'Ultrawide', 'Mobile', 'Square'] as const;
+const moods = ['All', 'Dramatic', 'Clean', 'Rainy', 'Neon', 'Night', 'Sunset', 'Vintage'] as const;
+const sources = ['All', 'AI', 'Real', 'Render'] as const;
+const formats = ['All', 'Portrait', 'Landscape', 'Square'] as const;
+
+type RequiredFilters = Required<{
+  resolution: typeof resolutions[number];
+  mood: typeof moods[number];
+  source: typeof sources[number];
+  format: typeof formats[number];
+}>;
+
 interface FilterBarProps {
   onFilterChange: (filters: FilterOptions) => void;
 }
 
 export default function FilterBar({ onFilterChange }: FilterBarProps) {
-  const [filters, setFilters] = useState<FilterOptions>({
+  const [filters, setFilters] = useState<RequiredFilters>({
     resolution: 'All',
     mood: 'All',
     source: 'All',
     format: 'All',
   });
   
-  const handleFilterChange = (key: keyof FilterOptions, value: string) => {
+  const handleFilterChange = <K extends keyof RequiredFilters>(
+    key: K,
+    value: RequiredFilters[K]
+  ) => {
     const updatedFilters = { ...filters, [key]: value };
     setFilters(updatedFilters);
     onFilterChange(updatedFilters);
   };
-  
-  const resolutions = ['All', '4K', 'Ultrawide', 'Mobile', 'Square'];
-  const moods = ['All', 'Dramatic', 'Clean', 'Rainy', 'Neon', 'Night', 'Sunset', 'Vintage'];
-  const sources = ['All', 'AI', 'Real', 'Render'];
-  const formats = ['All', 'Portrait', 'Landscape', 'Square'];
-  
+
   return (
     <div className="flex flex-wrap items-center gap-3 px-4 py-4 bg-muted/40 backdrop-blur-sm rounded-lg">
       <div className="flex items-center mr-2">
@@ -56,7 +66,7 @@ export default function FilterBar({ onFilterChange }: FilterBarProps) {
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup 
             value={filters.resolution} 
-            onValueChange={(value) => handleFilterChange('resolution', value)}
+            onValueChange={(value) => handleFilterChange('resolution', value as RequiredFilters['resolution'])}
           >
             {resolutions.map((resolution) => (
               <DropdownMenuRadioItem key={resolution} value={resolution}>
@@ -79,7 +89,7 @@ export default function FilterBar({ onFilterChange }: FilterBarProps) {
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup 
             value={filters.mood} 
-            onValueChange={(value) => handleFilterChange('mood', value)}
+            onValueChange={(value) => handleFilterChange('mood', value as RequiredFilters['mood'])}
           >
             {moods.map((mood) => (
               <DropdownMenuRadioItem key={mood} value={mood}>
@@ -102,7 +112,7 @@ export default function FilterBar({ onFilterChange }: FilterBarProps) {
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup 
             value={filters.source} 
-            onValueChange={(value) => handleFilterChange('source', value)}
+            onValueChange={(value) => handleFilterChange('source', value as RequiredFilters['source'])}
           >
             {sources.map((source) => (
               <DropdownMenuRadioItem key={source} value={source}>
@@ -125,7 +135,7 @@ export default function FilterBar({ onFilterChange }: FilterBarProps) {
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup 
             value={filters.format} 
-            onValueChange={(value) => handleFilterChange('format', value)}
+            onValueChange={(value) => handleFilterChange('format', value as RequiredFilters['format'])}
           >
             {formats.map((format) => (
               <DropdownMenuRadioItem key={format} value={format}>
@@ -140,7 +150,7 @@ export default function FilterBar({ onFilterChange }: FilterBarProps) {
         variant="ghost" 
         className="ml-auto"
         onClick={() => {
-          const resetFilters = {
+          const resetFilters: RequiredFilters = {
             resolution: 'All',
             mood: 'All',
             source: 'All',
