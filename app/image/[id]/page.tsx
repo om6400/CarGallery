@@ -8,7 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   getImageById, 
   getRelatedImages, 
-  getCategoryById 
+  getCategoryById,
+  images
 } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { 
@@ -27,6 +28,11 @@ import ImageCard from "@/components/image-card";
 import { Separator } from "@/components/ui/separator";
 import useGarage from "@/lib/hooks/useGarage";
 import { toast } from "sonner";
+
+export async function generateStaticParams() {
+  // Use all image IDs from the data source
+  return images.map((img) => ({ id: img.id }));
+}
 
 export default function ImageDetailPage() {
   const params = useParams();
